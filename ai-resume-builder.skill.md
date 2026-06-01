@@ -1,109 +1,133 @@
 # AI Resume Builder Skill
 
-> Claude Code 简历助手：智能匹配经历、优化简历、生成 PDF
+> 用户只需要把这个文件丢给 Claude Code，一切自动完成
 
-## 触发条件
+## 🚀 首次使用（自动安装）
 
-当用户提到以下关键词时激活此 Skill：
-- 简历、resume、CV
-- 求职、找工作、投递
-- JD、岗位描述、职位描述
-- 简历优化、简历生成、自我介绍
+当用户第一次使用时，Claude 自动执行：
 
-## 核心能力
+```bash
+# 1. 克隆项目到用户目录
+git clone https://github.com/gu1209/AI-Resume-Builder.git ~/AI-Resume-Builder
+cd ~/AI-Resume-Builder
 
-### 1. 📚 从文件总结经历库
+# 2. 安装依赖
+pip install -r requirements.txt
+npm install puppeteer-core nunjucks
 
-用户可以提供以下文件，Claude 自动提取经历信息：
-- 旧简历（PDF/Word/文本）
-- 个人经历档案
-- 工作总结/项目文档
-- 实习证明/推荐信
-
-**操作流程**：
+# 3. 启动服务（后台运行）
+nohup python resume_tool_simple.py > /dev/null 2>&1 &
 ```
-用户：这是我之前的简历和项目文档，帮我整理成经历库
-[提供文件]
 
-Claude：
+## 📍 服务地址
+
+本地：http://localhost:2345
+在线体验：http://121.41.118.22:2345
+
+## 🎯 核心功能
+
+### 功能 1：从文件提取经历
+
+用户只需提供文件，Claude 自动整理：
+
+```
+用户：这是我的简历/项目文档，帮我整理经历库
+[粘贴内容或提供文件路径]
+
+Claude 自动：
 1. 读取文件内容
-2. 提取教育、实习、项目、技能等信息
+2. 提取教育、实习、项目、技能
 3. 按标准格式整理
-4. 生成 experience_library.json
-5. 保存到 resumes/ 目录
+4. 保存到 experience_library.json
 ```
 
-### 2. 🎯 根据 JD 优化简历
+**输出格式**：
+```json
+{
+  "educations": [{"school": "...", "major": "...", "degree": "...", ...}],
+  "internships": [{"role": "...", "organization": "...", "description": [...]}],
+  "projects": [{"projectName": "...", "role": "...", "description": [...]}],
+  "skills": [{"category": "...", "content": "..."}]
+}
+```
 
-无需调用外部 API，直接用 Claude 分析：
+### 功能 2：根据 JD 优化简历
 
 ```
-用户：我想投这个产品经理岗位，帮我优化简历
+用户：我想投这个岗位，帮我优化简历
 [粘贴 JD]
 
-Claude：
-1. 分析 JD 的关键要求（技能、经验、素质）
-2. 读取用户当前简历
+Claude 自动：
+1. 分析 JD 关键要求（技能、经验、素质）
+2. 读取当前简历
 3. 逐条对比，找出匹配点和差距
-4. 提供具体的优化建议：
-   - 哪些经历应该突出
-   - 哪些描述需要调整
-   - 如何用 STAR 法则重写
-   - 字数控制建议
-5. 用户确认后，直接修改 JSON 文件
+4. 提供具体优化建议
+5. 用户确认后直接修改 JSON 文件
 ```
 
-### 3. 💬 生成自我介绍
+**输出示例**：
+```
+📋 JD 分析：
+- 关键词：用户增长、数据分析、A/B 测试
+- 核心要求：有互联网产品实习经验
+
+📊 简历匹配度：
+✅ 用户增长项目 - 高度匹配
+✅ 数据分析经验 - 匹配
+⚠️ 跨团队协作 - 需要补充
+
+💡 优化建议：
+1. 用户增长项目：增加 "协调设计、开发团队" 描述
+2. 补充量化指标：转化率 25%、DAU 增长 40%
+
+是否应用这些修改？
+```
+
+### 功能 3：生成自我介绍
 
 ```
 用户：帮我写一段给 HR 的自我介绍
 
-Claude：
+Claude 自动：
 1. 读取简历中的教育背景
 2. 提取与目标岗位匹配的关键经历
 3. 生成 100 字以内的自然话术
-4. 输出可直接复制的内容
 ```
 
-### 4. 📄 生成 PDF
+**输出示例**：
+```
+💬 自我介绍（可直接复制）：
+
+您好！我是天津大学金融硕士在读的顾杰，26年毕业。
+之前在 Momenta 做过 AI 产品实习，独立设计并落地了基于飞书的
+AI 智能助手，覆盖意图识别、Prompt 设计、数据检索全链路。
+对 Agent 架构和 AI 产品落地有实际经验，很期待能聊聊！
+```
+
+### 功能 4：生成 PDF
 
 ```
 用户：帮我生成 PDF
 
-Claude：
+Claude 自动：
 1. 调用 generate_puppeteer.js
 2. 生成高质量 PDF
-3. 自动压缩
+3. 自动压缩（文件大小减少 95%）
 4. 返回下载链接
 ```
 
-## 工具依赖
+## 📁 数据文件说明
 
-Skill 需要访问以下本地工具：
-
-### 必需
-- `generate_puppeteer.js` — PDF 生成脚本
-- `templates/resume.html.j2` — 简历模板
-- Node.js + puppeteer-core + nunjucks
-
-### 可选
-- Ghostscript — PDF 压缩
-
-## 文件结构
-
+### 简历文件位置
 ```
-AI-Resume-Builder/
-├── resume_tool_simple.py   # Web 后端（可选）
-├── generate_puppeteer.js   # PDF 生成
-├── templates/
-│   └── resume.html.j2      # 简历模板
-├── resumes/                # 简历 JSON 文件
-├── experience_library.json # 经历库
-└── skills/
-    └── resume.skill.md     # 本 Skill 文件
+~/AI-Resume-Builder/
+├── resumes/
+│   ├── internet-product.json   # 互联网产品方向
+│   ├── finance.json            # 金融方向
+│   └── public-sector.json      # 泛体制方向
+├── experience_library.json     # 经历库
+└── pdfs-puppeteer/             # 生成的 PDF
 ```
-
-## 数据格式
 
 ### 简历 JSON 结构
 
@@ -123,149 +147,86 @@ AI-Resume-Builder/
       "location": "北京",
       "availability": "可立即到岗"
     },
-    "sections": [
-      {
-        "id": "sec-edu",
-        "type": "education",
-        "title": "教育背景",
-        "enabled": true,
-        "order": 0,
-        "content": {
-          "items": [{
-            "id": "edu-001",
-            "school": "北京大学",
-            "major": "计算机科学",
-            "degree": "硕士",
-            "startDate": "2023.09",
-            "endDate": "2026.06",
-            "gpa": "3.8/4.0",
-            "tags": [{"text": "985", "color": "#c53030", "bg": "#fed7d7"}],
-            "enabled": true
-          }]
-        }
-      },
-      {
-        "id": "sec-intern",
-        "type": "internship",
-        "title": "实习经历",
-        "enabled": true,
-        "order": 1,
-        "content": {
-          "items": [{
-            "id": "int-001",
-            "role": "产品实习生",
-            "organization": "某互联网公司",
-            "dateRange": "2025.06 - 2025.12",
-            "description": [{
-              "id": "desc-001",
-              "title": "用户增长项目",
-              "content": "负责用户增长策略设计...",
-              "enabled": true
-            }],
-            "tags": [{"text": "产品", "color": "#2d5a27", "bg": "#e8f0e6"}],
-            "enabled": true
-          }]
-        }
-      }
-    ]
+    "sections": [...]
   }]
 }
 ```
 
-### 经历库结构
+## 💡 使用技巧
 
-```json
-{
-  "educations": [...],
-  "internships": [...],
-  "projects": [...],
-  "skills": [...],
-  "honors": [...],
-  "certificates": [...]
-}
-```
+### 1. 首次使用
+直接说：「帮我做一份简历」，Claude 会引导你完成
 
-## 使用示例
+### 2. 批量投递
+说：「我要投 5 个岗位，帮我分别优化」，Claude 会生成 5 个版本
 
-### 示例 1：从旧简历提取经历
+### 3. 快速修改
+说：「把实习经历的第二条改一下」，Claude 直接修改文件
 
-```
-用户：这是我的旧简历，帮我整理成经历库
-[提供 PDF 或文本]
+### 4. 导出分享
+说：「生成 PDF 发给 HR」，Claude 自动导出
 
-Claude：
-好的，我来帮你提取经历信息...
+## ⚠️ 注意事项
 
-提取结果：
-📚 教育背景
-- 北京大学 | 计算机科学 | 硕士 | 2023.09-2026.06
+1. **首次使用需要网络**：需要克隆仓库和安装依赖
+2. **PDF 生成需要 Node.js**：确保已安装 Node.js 16+
+3. **中文字体**：Linux 服务器需要安装中文字体
+4. **Ghostscript**：PDF 压缩需要 Ghostscript
 
-💼 实习经历
-1. 某互联网公司 - 产品实习生 (2025.06-2025.12)
-   - 用户增长项目：负责用户增长策略设计，转化率提升 25%
-   - 功能迭代优化：主导 APP 首页改版，停留时长提升 20%
+## 🔧 常见问题
 
-🔧 项目经历
-1. 校园社交小程序 (2024.09-2025.03)
-   - 从 0 到 1 设计，3 个月获取 5000+ 用户
+### Q: Claude 说找不到项目？
+A: 让 Claude 重新克隆：「重新安装简历工具」
 
-已保存到 experience_library.json，是否需要调整？
-```
+### Q: PDF 生成失败？
+A: 让 Claude 检查环境：「检查 Node.js 和依赖是否安装」
 
-### 示例 2：根据 JD 优化简历
+### Q: 如何更新 Skill？
+A: 重新下载最新的 .skill.md 文件丢给 Claude 即可
+
+## 📖 完整对话示例
 
 ```
-用户：我想投字节跳动的产品经理，帮我优化简历
+用户：我想找产品经理实习，帮我做一份简历
+
+Claude：好的，我来帮你！首先让我了解一下你的情况：
+1. 你现在是什么学校什么专业？
+2. 有哪些实习或项目经历？
+3. 目标公司是哪些？
+
+用户：我是天津大学金融硕士，有一段 AI 产品实习...
+
+Claude：好的，我来帮你整理简历。
+[自动创建简历 JSON]
+[引导用户补充细节]
+[按 STAR 法则整理经历]
+
+简历已创建，是否需要：
+1. 针对某个 JD 优化？
+2. 生成 PDF？
+3. 写一段自我介绍？
+
+用户：帮我针对字节的产品经理优化一下
 [粘贴 JD]
 
 Claude：
-分析 JD 关键要求：
-1. 用户洞察能力
-2. 数据分析能力
-3. 跨团队协作
-4. 有互联网产品实习经验
+📋 JD 分析：...
+📊 匹配度：...
+💡 优化建议：...
 
-对比你的简历：
-✅ 用户增长项目 - 突出数据驱动决策
-✅ APP 改版项目 - 强调用户调研方法
-⚠️ 缺少跨团队协作的描述
+是否应用？
 
-优化建议：
-1. 用户增长项目：增加 "协调设计、开发团队" 的描述
-2. 添加数据指标：转化率 25%、DAU 增长 40%
+用户：好的
 
-是否应用这些修改？
+Claude：已应用！是否生成 PDF？
+
+用户：是的
+
+Claude：PDF 已生成：~/AI-Resume-Builder/pdfs-puppeteer/顾杰-xxx.pdf
 ```
 
-### 示例 3：生成自我介绍
+## 🔗 相关链接
 
-```
-用户：帮我写一段给字节 HR 的自我介绍
-
-Claude：
-根据你的简历和目标岗位，推荐以下自我介绍：
-
----
-您好！我是北京大学计算机硕士在读的张三，26 年毕业。
-之前在某互联网公司做过产品实习，主导了用户增长策略设计，
-通过数据驱动的方式将转化率提升了 25%。
-对用户洞察和数据分析有实际经验，很期待能聊聊贵司的产品岗位！
----
-（98 字，可直接复制使用）
-```
-
-## 注意事项
-
-1. **数据安全**：所有数据处理在本地完成，不会上传到第三方
-2. **文件格式**：支持 JSON 格式的简历文件
-3. **PDF 生成**：需要 Node.js 和 Puppeteer 环境
-4. **字体要求**：PDF 生成需要中文字体支持
-
-## 版本记录
-
-### v1.0.0 (2026-06-01)
-- ✨ 初始版本
-- 📚 从文件提取经历
-- 🎯 JD 匹配优化
-- 💬 自我介绍生成
-- 📄 PDF 导出
+- **GitHub**: https://github.com/gu1209/AI-Resume-Builder
+- **Skill 版**: https://github.com/gu1209/ai-resumer-builder-skill
+- **在线体验**: http://121.41.118.22:2345

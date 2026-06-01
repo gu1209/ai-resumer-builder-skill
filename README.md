@@ -1,189 +1,90 @@
 # AI Resume Builder - Claude Code Skill
 
-> 🎯 让 Claude Code 成为你的简历助手：智能匹配经历、优化简历、生成 PDF
+> 🎯 **一句话**：把这个文件丢给 Claude Code，它就能帮你做简历
 
-## ✨ 三大版本
+## 🚀 使用方法
 
-| 版本 | 说明 | AI 能力 | 用户管理 |
-|------|------|---------|----------|
-| **Claude Code Skill** | 本仓库 | Claude 原生能力 | ❌ |
-| [Web 完整版](https://github.com/gu1209/AI-Resume-Builder) | Flask + 用户系统 | DeepSeek API | ✅ |
-| [Web 开源版](https://github.com/gu1209/AI-Resume-Builder) | Flask 简化版 | DeepSeek API | ❌ |
+### 第一步：下载 Skill 文件
 
-## 🚀 快速开始
+点击下载：[ai-resume-builder.skill.md](./ai-resume-builder.skill.md)
 
-### 1. 安装 Skill
+### 第二步：丢给 Claude Code
 
-```bash
-# 克隆仓库
-git clone https://github.com/gu1209/ai-resumer-builder-skill.git
-cd ai-resumer-builder-skill
+直接把文件拖进 Claude Code 窗口，或者复制内容粘贴进去
 
-# 运行安装脚本
-./setup.sh      # Linux/Mac
-setup.bat       # Windows
-```
-
-### 2. 部署 PDF 生成工具
-
-```bash
-# 克隆主项目
-git clone https://github.com/gu1209/AI-Resume-Builder.git
-cd AI-Resume-Builder
-
-# 安装依赖
-pip install -r requirements.txt
-npm install puppeteer-core nunjucks
-```
-
-### 3. 开始使用
-
-在 Claude Code 中直接对话：
+### 第三步：开始对话
 
 ```
-帮我整理这份简历的经历库
+帮我做一份简历
 ```
 
-## 🎯 核心功能
+就这么简单！Claude 会自动完成所有事情。
 
-### 📚 从文件总结经历库
+---
 
-提供旧简历、项目文档等文件，Claude 自动提取并整理：
+## ✨ 功能
 
-```
-用户：这是我的旧简历和项目文档，帮我整理成经历库
-[提供文件]
+| 功能 | 说明 |
+|------|------|
+| 📚 提取经历 | 提供旧简历/文档，自动整理成经历库 |
+| 🎯 优化简历 | 粘贴 JD，自动分析并优化 |
+| 💬 自我介绍 | 生成 100 字以内给 HR 的话术 |
+| 📄 生成 PDF | 一键导出，自动压缩 |
 
-Claude 自动提取：
-- 教育背景
-- 实习经历
-- 项目经历
-- 技能证书
-```
+---
 
-### 🎯 根据 JD 优化简历
+## 💬 使用示例
 
-无需外部 API，直接用 Claude 分析：
+### 示例 1：从零开始
 
 ```
-用户：我想投这个产品经理岗位，帮我优化简历
+用户：帮我做一份产品经理的简历
+
+Claude：好的！先了解一下你的情况...
+[自动引导、整理、生成]
+```
+
+### 示例 2：优化现有简历
+
+```
+用户：我想投字节的产品经理，帮我优化
 [粘贴 JD]
 
-Claude：
-1. 分析 JD 关键要求
-2. 对比简历内容
-3. 提供逐条优化建议
-4. 用户确认后直接修改
+Claude：分析 JD 关键要求... 对比简历... 优化建议...
+[自动修改]
 ```
 
-### 💬 生成自我介绍
+### 示例 3：生成自我介绍
 
 ```
 用户：帮我写一段给 HR 的自我介绍
 
-Claude 生成 100 字以内的话术，可直接复制使用
+Claude：根据你的简历和目标岗位：
+您好！我是天津大学金融硕士在读的顾杰...
 ```
 
-### 📄 生成 PDF
+---
 
-```
-用户：帮我生成 PDF
+## ❓ 常见问题
 
-Claude 调用 Puppeteer 生成高质量 PDF，自动压缩
-```
+**Q: 需要安装什么吗？**
+A: 不用！Claude 会自动安装所有依赖
 
-## 🔧 技术实现
+**Q: 需要 API Key 吗？**
+A: 不需要！用 Claude 自己的能力
 
-### Skill 工作原理
+**Q: 数据安全吗？**
+A: 所有数据在本地处理，不会上传
 
-```
-用户输入 → Claude Code → 读取本地文件 → Claude 分析 → 输出结果
-                ↓
-         调用 generate_puppeteer.js → 生成 PDF
-```
+---
 
-### 与 Web 版的区别
+## 🔗 相关项目
 
-| 功能 | Skill 版 | Web 版 |
-|------|----------|--------|
-| AI 分析 | Claude 原生 | DeepSeek API |
-| API Key | 不需要 | 需要配置 |
-| 用户管理 | 无 | 有 |
-| 界面 | CLI 对话 | Web UI |
-| 离线使用 | 部分功能 | 需要网络 |
+- [Web 版（在线体验）](https://github.com/gu1209/AI-Resume-Builder)
+- [在线体验](http://121.41.118.22:2345)
 
-## 📖 使用场景
-
-### 场景 1：从零开始
-
-```
-用户：我找实习，帮我做一份简历
-
-Claude：
-1. 了解你的背景和目标岗位
-2. 引导你描述经历
-3. 按 STAR 法则整理
-4. 生成简历 JSON
-5. 导出 PDF
-```
-
-### 场景 2：优化现有简历
-
-```
-用户：我想投字节的产品经理，帮我优化简历
-[粘贴 JD]
-
-Claude：
-1. 分析 JD 关键要求
-2. 对比你的简历
-3. 给出具体优化建议
-4. 你确认后直接修改
-```
-
-### 场景 3：批量投递
-
-```
-用户：我要投 5 个不同岗位，帮我分别优化
-
-Claude：
-1. 分析每个 JD 的差异
-2. 为每个岗位生成针对性版本
-3. 分别导出 PDF
-```
-
-## 📁 文件说明
-
-| 文件 | 说明 |
-|------|------|
-| `ai-resume-builder.skill.md` | Skill 主文件 |
-| `README.md` | 本文件 |
-| `INSTALL.md` | 安装指南 |
-| `setup.sh` / `setup.bat` | 安装脚本 |
-| `LICENSE` | MIT 许可证 |
-
-## 🔗 相关链接
-
-- **Web 版**: https://github.com/gu1209/AI-Resume-Builder
-- **Skill 版**: https://github.com/gu1209/ai-resumer-builder-skill
-- **在线体验**: http://121.41.118.22:2345
-
-## 📝 更新日志
-
-### v1.0.0 (2026-06-01)
-- ✨ 初始版本
-- 📚 从文件提取经历
-- 🎯 JD 匹配优化
-- 💬 自我介绍生成
-- 📄 PDF 导出
-
-## 🤝 贡献
-
-欢迎 Issue 和 PR！
+---
 
 ## 📄 许可证
 
 MIT License
-
----
-
-**如果觉得有用，欢迎点个 ⭐ Star 支持一下！**
