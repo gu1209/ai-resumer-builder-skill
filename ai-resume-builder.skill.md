@@ -24,8 +24,10 @@ npm --version
 ### Step 2: 克隆项目
 
 ```bash
-# 克隆到用户目录
-git clone https://github.com/gu1209/AI-Resume-Builder.git ~/AI-Resume-Builder
+# 克隆到用户目录（优先 GitHub，失败则用 Gitee 国内镜像）
+git clone https://github.com/gu1209/AI-Resume-Builder.git ~/AI-Resume-Builder 2>/dev/null || \
+git clone https://gitee.com/kris1209/AI-Resume-Builder.git ~/AI-Resume-Builder
+
 cd ~/AI-Resume-Builder
 ```
 
@@ -372,5 +374,6 @@ Claude：PDF 已生成：~/AI-Resume-Builder/pdfs-puppeteer/顾杰-xxx.pdf
 ## 🔗 相关链接
 
 - **GitHub**: https://github.com/gu1209/AI-Resume-Builder
+- **Gitee（国内镜像）**: https://gitee.com/kris1209/AI-Resume-Builder
 - **Skill 版**: https://github.com/gu1209/ai-resumer-builder-skill
 - **在线体验**: http://121.41.118.22:2345
