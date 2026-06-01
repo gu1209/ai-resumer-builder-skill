@@ -4,25 +4,58 @@
 
 ## 🚀 首次使用（自动安装）
 
-当用户第一次使用时，Claude 自动执行：
+当用户第一次使用时，Claude 自动执行以下步骤：
+
+### Step 1: 检查环境
 
 ```bash
-# 1. 克隆项目到用户目录
+# 检查 Python
+python3 --version || python --version
+
+# 检查 Node.js
+node --version
+
+# 检查 npm
+npm --version
+```
+
+如果缺少环境，提示用户安装。
+
+### Step 2: 克隆项目
+
+```bash
+# 克隆到用户目录
 git clone https://github.com/gu1209/AI-Resume-Builder.git ~/AI-Resume-Builder
 cd ~/AI-Resume-Builder
+```
 
-# 2. 安装依赖
+### Step 3: 安装依赖
+
+```bash
+# Python 依赖
 pip install -r requirements.txt
-npm install puppeteer-core nunjucks
 
-# 3. 启动服务（后台运行）
+# Node.js 依赖
+npm install puppeteer-core nunjucks
+```
+
+### Step 4: 启动服务
+
+```bash
+# 后台启动
 nohup python resume_tool_simple.py > /dev/null 2>&1 &
+
+# 等待服务启动
+sleep 2
+
+# 验证服务
+curl -s http://localhost:2345 > /dev/null && echo "服务启动成功" || echo "服务启动失败"
 ```
 
 ## 📍 服务地址
 
-本地：http://localhost:2345
-在线体验：http://121.41.118.22:2345
+- 本地：http://localhost:2345
+- 在线体验：http://121.41.118.22:2345
 
 ## 🎯 核心功能
 
@@ -33,21 +66,58 @@ nohup python resume_tool_simple.py > /dev/null 2>&1 &
 ```
 用户：这是我的简历/项目文档，帮我整理经历库
 [粘贴内容或提供文件路径]
-
-Claude 自动：
-1. 读取文件内容
-2. 提取教育、实习、项目、技能
-3. 按标准格式整理
-4. 保存到 experience_library.json
 ```
+
+**Claude 执行步骤**：
+1. 读取用户提供的文件内容
+2. 使用正则表达式和关键词提取信息：
+   - 教育背景：学校、专业、学位、时间、GPA
+   - 实习经历：公司、职位、时间、工作内容
+   - 项目经历：项目名、角色、时间、描述
+   - 技能证书：类别、具体内容
+3. 按标准格式整理成 JSON
+4. 保存到 `~/AI-Resume-Builder/experience_library.json`
 
 **输出格式**：
 ```json
 {
-  "educations": [{"school": "...", "major": "...", "degree": "...", ...}],
-  "internships": [{"role": "...", "organization": "...", "description": [...]}],
-  "projects": [{"projectName": "...", "role": "...", "description": [...]}],
-  "skills": [{"category": "...", "content": "..."}]
+  "educations": [
+    {
+      "id": "edu-xxx",
+      "school": "学校名称",
+      "major": "专业",
+      "degree": "硕士/学士",
+      "startDate": "2023.09",
+      "endDate": "2026.06",
+      "gpa": "3.8/4.0",
+      "courses": ["课程1", "课程2"],
+      "tags": [{"text": "985", "color": "#c53030", "bg": "#fed7d7"}],
+      "order": 0,
+      "enabled": true
+    }
+  ],
+  "internships": [
+    {
+      "id": "int-xxx",
+      "role": "职位名称",
+      "organization": "公司名称",
+      "dateRange": "2025.06 - 2025.12",
+      "description": [
+        {
+          "id": "desc-xxx",
+          "title": "工作内容标题",
+          "content": "具体工作描述",
+          "order": 0,
+          "enabled": true
+        }
+      ],
+      "tags": [],
+      "order": 0,
+      "enabled": true
+    }
+  ],
+  "projects": [...],
+  "skills": [...]
 }
 ```
 
@@ -56,14 +126,16 @@ Claude 自动：
 ```
 用户：我想投这个岗位，帮我优化简历
 [粘贴 JD]
-
-Claude 自动：
-1. 分析 JD 关键要求（技能、经验、素质）
-2. 读取当前简历
-3. 逐条对比，找出匹配点和差距
-4. 提供具体优化建议
-5. 用户确认后直接修改 JSON 文件
 ```
+
+**Claude 执行步骤**：
+1. 读取当前简历文件（默认 `~/AI-Resume-Builder/resumes/internet-product.json`）
+2. 分析 JD，提取关键词：
+   - 技能要求（如：数据分析、用户增长）
+   - 经验要求（如：有互联网产品实习）
+   - 素质要求（如：沟通能力、团队协作）
+3. 对比简历内容，生成优化建议
+4. 用户确认后，直接修改 JSON 文件
 
 **输出示例**：
 ```
@@ -83,16 +155,32 @@ Claude 自动：
 是否应用这些修改？
 ```
 
+**修改文件**：
+```python
+# 使用 Python 修改 JSON
+import json
+
+with open('~/AI-Resume-Builder/resumes/internet-product.json', 'r') as f:
+    data = json.load(f)
+
+# 修改对应字段
+# ...
+
+with open('~/AI-Resume-Builder/resumes/internet-product.json', 'w') as f:
+    json.dump(data, f, ensure_ascii=False, indent=2)
+```
+
 ### 功能 3：生成自我介绍
 
 ```
 用户：帮我写一段给 HR 的自我介绍
-
-Claude 自动：
-1. 读取简历中的教育背景
-2. 提取与目标岗位匹配的关键经历
-3. 生成 100 字以内的自然话术
 ```
+
+**Claude 执行步骤**：
+1. 读取简历文件
+2. 提取教育背景（学校、专业、学位、毕业时间）
+3. 提取与目标岗位匹配的关键经历（1-2 个亮点）
+4. 生成 100 字以内的自然话术
 
 **输出示例**：
 ```
@@ -108,12 +196,24 @@ AI 智能助手，覆盖意图识别、Prompt 设计、数据检索全链路。
 
 ```
 用户：帮我生成 PDF
+```
 
-Claude 自动：
-1. 调用 generate_puppeteer.js
-2. 生成高质量 PDF
-3. 自动压缩（文件大小减少 95%）
-4. 返回下载链接
+**Claude 执行步骤**：
+1. 确保服务正在运行
+2. 调用 PDF 生成接口
+
+```bash
+# 生成当前简历的 PDF
+curl -X POST http://localhost:2345/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{"resumeId": "internet-product"}'
+```
+
+3. 返回 PDF 文件路径
+
+```bash
+# PDF 文件位置
+ls ~/AI-Resume-Builder/pdfs-puppeteer/*.pdf
 ```
 
 ## 📁 数据文件说明
@@ -147,7 +247,51 @@ Claude 自动：
       "location": "北京",
       "availability": "可立即到岗"
     },
-    "sections": [...]
+    "sections": [
+      {
+        "id": "sec-edu",
+        "type": "education",
+        "title": "教育背景",
+        "enabled": true,
+        "order": 0,
+        "content": {
+          "items": [{
+            "id": "edu-001",
+            "school": "学校名称",
+            "major": "专业",
+            "degree": "硕士",
+            "startDate": "2023.09",
+            "endDate": "2026.06",
+            "gpa": "3.8/4.0",
+            "tags": [{"text": "985", "color": "#c53030", "bg": "#fed7d7"}],
+            "enabled": true
+          }]
+        }
+      },
+      {
+        "id": "sec-intern",
+        "type": "internship",
+        "title": "实习经历",
+        "enabled": true,
+        "order": 1,
+        "content": {
+          "items": [{
+            "id": "int-001",
+            "role": "产品实习生",
+            "organization": "某互联网公司",
+            "dateRange": "2025.06 - 2025.12",
+            "description": [{
+              "id": "desc-001",
+              "title": "工作内容",
+              "content": "具体描述...",
+              "enabled": true
+            }],
+            "tags": [{"text": "产品", "color": "#2d5a27", "bg": "#e8f0e6"}],
+            "enabled": true
+          }]
+        }
+      }
+    ]
   }]
 }
 ```
