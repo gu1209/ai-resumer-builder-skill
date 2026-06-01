@@ -41,8 +41,36 @@ pip install -r requirements.txt
 npm install puppeteer-core nunjucks
 ```
 
-### Step 4: 启动服务
+### Step 4: 修复已知问题
 
+**问题 1：模板语法错误**
+模板中使用了 Python 的 `.get()` 方法，nunjucks 不支持。需要修复：
+
+```bash
+# 修复模板语法（将 .get() 改为直接访问）
+sed -i "s/section\.content\.get('items', \[\] or \[\])/section.content.items or []/g" templates/resume.html.j2
+```
+
+**问题 2：Chrome 路径配置（Windows）**
+需要配置 Chrome 浏览器路径：
+
+```javascript
+// 在 generate_puppeteer.js 中修改 executablePath
+// Windows 路径示例：
+executablePath: process.env.CHROME_PATH || 'C:\\Users\\用户名\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe'
+```
+
+**问题 3：创建缺失的 experience_library.json**
+```bash
+# 如果文件不存在，创建默认的
+if [ ! -f experience_library.json ]; then
+  echo '{"internships":[],"projects":[],"skills":[],"educations":[]}' > experience_library.json
+fi
+```
+
+### Step 5: 启动服务
+
+**Linux/Mac:**
 ```bash
 # 后台启动
 nohup python resume_tool_simple.py > /dev/null 2>&1 &
@@ -52,6 +80,23 @@ sleep 2
 
 # 验证服务
 curl -s http://localhost:2345 > /dev/null && echo "服务启动成功" || echo "服务启动失败"
+```
+
+**Windows (PowerShell):**
+```powershell
+# 后台启动
+Start-Process python -ArgumentList "resume_tool_simple.py" -WindowStyle Hidden
+
+# 等待服务启动
+Start-Sleep -Seconds 3
+
+# 验证服务
+try {
+    $response = Invoke-WebRequest -Uri "http://localhost:2345" -UseBasicParsing -TimeoutSec 5
+    Write-Host "服务启动成功！状态码: $($response.StatusCode)"
+} catch {
+    Write-Host "服务访问失败: $($_.Exception.Message)"
+}
 ```
 
 ## 📍 服务地址
@@ -131,7 +176,7 @@ curl -s http://localhost:2345 > /dev/null && echo "服务启动成功" || echo "
 ```
 
 **Claude 执行步骤**：
-1. 读取当前简历文件（默认 `~/AI-Resume-Builder/resumes/internet-product.json`）
+1. 读取当前简历文件（默认 `~/AI-Resume-Builder/resumes/example-product.json`）
 2. 分析 JD，提取关键词：
    - 技能要求（如：数据分析、用户增长）
    - 经验要求（如：有互联网产品实习）
@@ -162,13 +207,13 @@ curl -s http://localhost:2345 > /dev/null && echo "服务启动成功" || echo "
 # 使用 Python 修改 JSON
 import json
 
-with open('~/AI-Resume-Builder/resumes/internet-product.json', 'r') as f:
+with open('~/AI-Resume-Builder/resumes/example-product.json', 'r') as f:
     data = json.load(f)
 
 # 修改对应字段
 # ...
 
-with open('~/AI-Resume-Builder/resumes/internet-product.json', 'w') as f:
+with open('~/AI-Resume-Builder/resumes/example-product.json', 'w') as f:
     json.dump(data, f, ensure_ascii=False, indent=2)
 ```
 
@@ -194,7 +239,7 @@ AI 智能助手，覆盖意图识别、Prompt 设计、数据检索全链路。
 对 Agent 架构和 AI 产品落地有实际经验，很期待能聊聊！
 ```
 
-### 功能 4：生成 PDF
+### 功能 4：生成 PDF（通过 API）
 
 ```
 用户：帮我生成 PDF
@@ -204,18 +249,38 @@ AI 智能助手，覆盖意图识别、Prompt 设计、数据检索全链路。
 1. 确保服务正在运行
 2. 调用 PDF 生成接口
 
+**PowerShell 方式**：
+```powershell
+# 生成当前简历的 PDF
+$body = @{ resumeId = "example-product" } | ConvertTo-Json
+$response = Invoke-RestMethod -Uri "http://localhost:2345/api/generate" -Method Post -ContentType "application/json" -Body $body
+
+# 输出结果
+Write-Host "生成结果: $($response | ConvertTo-Json -Depth 3)"
+
+# PDF 文件位置
+ls ~/AI-Resume-Builder/pdfs-puppeteer/*.pdf
+```
+
+**curl 方式（Linux/Mac）**：
 ```bash
 # 生成当前简历的 PDF
 curl -X POST http://localhost:2345/api/generate \
   -H "Content-Type: application/json" \
-  -d '{"resumeId": "internet-product"}'
-```
+  -d '{"resumeId": "example-product"}'
 
-3. 返回 PDF 文件路径
-
-```bash
 # PDF 文件位置
 ls ~/AI-Resume-Builder/pdfs-puppeteer/*.pdf
+```
+
+**直接调用 Node.js（不依赖服务）**：
+```bash
+# 直接生成 PDF
+cd ~/AI-Resume-Builder
+node generate_puppeteer.js --resume=example-product
+
+# PDF 文件位置
+ls pdfs-puppeteer/*.pdf
 ```
 
 ## 📁 数据文件说明
@@ -224,10 +289,13 @@ ls ~/AI-Resume-Builder/pdfs-puppeteer/*.pdf
 ```
 ~/AI-Resume-Builder/
 ├── resumes/
+│   ├── example-product.json    # 示例简历
 │   ├── internet-product.json   # 互联网产品方向
 │   ├── finance.json            # 金融方向
 │   └── public-sector.json      # 泛体制方向
 ├── experience_library.json     # 经历库
+├── templates/
+│   └── resume.html.j2          # PDF 模板
 └── pdfs-puppeteer/             # 生成的 PDF
 ```
 
@@ -312,12 +380,20 @@ ls ~/AI-Resume-Builder/pdfs-puppeteer/*.pdf
 ### 4. 导出分享
 说：「生成 PDF 发给 HR」，Claude 自动导出
 
+### 5. 完全通过 Claude 操作
+不需要打开浏览器，Claude 可以直接：
+- 读取/修改简历 JSON
+- 根据 JD 优化简历
+- 生成自我介绍
+- 调用 API 生成 PDF
+
 ## ⚠️ 注意事项
 
 1. **首次使用需要网络**：需要克隆仓库和安装依赖
 2. **PDF 生成需要 Node.js**：确保已安装 Node.js 16+
 3. **中文字体**：Linux 服务器需要安装中文字体
-4. **Ghostscript**：PDF 压缩需要 Ghostscript
+4. **Ghostscript**：PDF 压缩需要 Ghostscript（可选）
+5. **Chrome 浏览器**：PDF 生成需要 Chrome 或 Chromium
 
 ## 🔧 常见问题
 
@@ -326,6 +402,15 @@ A: 让 Claude 重新克隆：「重新安装简历工具」
 
 ### Q: PDF 生成失败？
 A: 让 Claude 检查环境：「检查 Node.js 和依赖是否安装」
+
+### Q: 模板渲染错误？
+A: 模板中使用了 `.get()` 方法，需要修复为直接访问：
+```bash
+sed -i "s/section\.content\.get('items', \[\] or \[\])/section.content.items or []/g" templates/resume.html.j2
+```
+
+### Q: Chrome 找不到？
+A: 需要配置 Chrome 路径，或设置环境变量 `CHROME_PATH`
 
 ### Q: 如何更新 Skill？
 A: 重新下载最新的 .skill.md 文件丢给 Claude 即可
@@ -368,7 +453,7 @@ Claude：已应用！是否生成 PDF？
 
 用户：是的
 
-Claude：PDF 已生成：~/AI-Resume-Builder/pdfs-puppeteer/顾杰-xxx.pdf
+Claude：PDF 已生成：~/AI-Resume-Builder/pdfs-puppeteer/张三-xxx.pdf
 ```
 
 ## 🔗 相关链接
