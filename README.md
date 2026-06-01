@@ -30,6 +30,7 @@
 | 🎯 优化简历 | 粘贴 JD，自动分析并优化 |
 | 💬 自我介绍 | 生成 100 字以内给 HR 的话术 |
 | 📄 生成 PDF | 一键导出，自动压缩 |
+| 🌐 国内镜像 | 支持 Gitee 克隆，解决网络问题 |
 
 ---
 
@@ -63,6 +64,24 @@ Claude：根据你的简历和目标岗位：
 您好！我是天津大学金融硕士在读的顾杰...
 ```
 
+### 示例 4：生成 PDF
+
+```
+用户：帮我生成 PDF
+
+Claude：PDF 已生成：~/AI-Resume-Builder/pdfs-puppeteer/张三-xxx.pdf
+```
+
+---
+
+## 🔧 技术特性
+
+- **自动环境检测**：Python、Node.js、npm
+- **智能克隆**：优先 GitHub，失败自动切换 Gitee 国内镜像
+- **本地修复**：自动修复模板语法、Chrome 路径等问题
+- **API 调用**：支持通过 API 生成 PDF，无需打开浏览器
+- **跨平台**：Windows、Linux、macOS 全支持
+
 ---
 
 ## ❓ 常见问题
@@ -76,11 +95,18 @@ A: 不需要！用 Claude 自己的能力
 **Q: 数据安全吗？**
 A: 所有数据在本地处理，不会上传
 
+**Q: 国内网络不好怎么办？**
+A: Skill 自动使用 Gitee 国内镜像
+
+**Q: PDF 生成失败？**
+A: Claude 会自动检测并修复 Chrome 路径问题
+
 ---
 
 ## 🔗 相关项目
 
-- [Web 版（在线体验）](https://github.com/gu1209/AI-Resume-Builder)
+- [GitHub 仓库](https://github.com/gu1209/AI-Resume-Builder)
+- [Gitee 国内镜像](https://gitee.com/kris1209/AI-Resume-Builder)
 - [在线体验](http://121.41.118.22:2345)
 
 ---
