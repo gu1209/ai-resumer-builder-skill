@@ -41,30 +41,49 @@ pip install -r requirements.txt
 npm install puppeteer-core nunjucks
 ```
 
-### Step 4: 修复已知问题
+### Step 4: 本地修复（自动应用）
 
-**问题 1：模板语法错误**
-模板中使用了 Python 的 `.get()` 方法，nunjucks 不支持。需要修复：
+克隆完成后，Claude 自动修复以下已知问题（仅本地修改，不影响远程仓库）：
+
+**修复 1：模板语法错误**
+模板中使用了 Python 的 `.get()` 方法，nunjucks 不支持：
 
 ```bash
-# 修复模板语法（将 .get() 改为直接访问）
+# Linux/Mac
 sed -i "s/section\.content\.get('items', \[\] or \[\])/section.content.items or []/g" templates/resume.html.j2
+
+# Windows PowerShell
+(Get-Content templates\resume.html.j2) -replace "section\.content\.get\('items', \[\] or \[\]\)", "section.content.items or []" | Set-Content templates\resume.html.j2
 ```
 
-**问题 2：Chrome 路径配置（Windows）**
-需要配置 Chrome 浏览器路径：
+**修复 2：Chrome 路径配置**
+Puppeteer 需要 Chrome 浏览器，自动检测并配置路径：
 
 ```javascript
 // 在 generate_puppeteer.js 中修改 executablePath
-// Windows 路径示例：
+// Windows 示例：
 executablePath: process.env.CHROME_PATH || 'C:\\Users\\用户名\\AppData\\Local\\Google\\Chrome\\Application\\chrome.exe'
+
+// Linux 示例：
+executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome'
+
+// Mac 示例：
+executablePath: process.env.CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 ```
 
-**问题 3：创建缺失的 experience_library.json**
+**修复 3：创建缺失的 experience_library.json**
 ```bash
 # 如果文件不存在，创建默认的
 if [ ! -f experience_library.json ]; then
   echo '{"internships":[],"projects":[],"skills":[],"educations":[]}' > experience_library.json
+fi
+```
+
+**修复 4：重命名模板文件（如果需要）**
+```bash
+# 如果模板文件名是 index_simple.html，重命名为 index.html
+if [ -f templates_gui/index_simple.html ] && [ ! -f templates_gui/index.html ]; then
+  mv templates_gui/index_simple.html templates_gui/index.html
 fi
 ```
 
@@ -394,6 +413,7 @@ ls pdfs-puppeteer/*.pdf
 3. **中文字体**：Linux 服务器需要安装中文字体
 4. **Ghostscript**：PDF 压缩需要 Ghostscript（可选）
 5. **Chrome 浏览器**：PDF 生成需要 Chrome 或 Chromium
+6. **本地修改**：Step 4 的修复仅应用于本地克隆，不影响远程仓库
 
 ## 🔧 常见问题
 
@@ -406,7 +426,11 @@ A: 让 Claude 检查环境：「检查 Node.js 和依赖是否安装」
 ### Q: 模板渲染错误？
 A: 模板中使用了 `.get()` 方法，需要修复为直接访问：
 ```bash
+# Linux/Mac
 sed -i "s/section\.content\.get('items', \[\] or \[\])/section.content.items or []/g" templates/resume.html.j2
+
+# Windows PowerShell
+(Get-Content templates\resume.html.j2) -replace "section\.content\.get\('items', \[\] or \[\]\)", "section.content.items or []" | Set-Content templates\resume.html.j2
 ```
 
 ### Q: Chrome 找不到？
