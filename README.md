@@ -183,4 +183,12 @@ A: 支持所有 Agent！只要能加载提示词就可以：
 
 ## 📄 许可证
 
-MIT License
+© 2026 gu1209. 本作品采用 [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/)。
+
+**您可以自由地**：
+- 分享：以任何媒介或格式复制和分发本作品
+- 改编：对本作品进行 remix、transform 和构建
+
+**需满足以下条件**：
+- 署名（Attribution）：必须提供适当的署名，提供许可证的链接，并指明是否进行了修改
+- 非商业用途（NonCommercial）：不得将本作品用于商业目的
