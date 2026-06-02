@@ -17,9 +17,21 @@ node --version
 
 # 检查 npm
 npm --version
+
+# 检查 Ghostscript（用于 PDF 压缩，可选）
+gs --version 2>/dev/null || echo "Ghostscript 未安装（可选，不影响 PDF 生成）"
 ```
 
 如果缺少环境，提示用户安装。
+
+**Windows 用户还需要安装中文字体**：
+```powershell
+# 检查是否有微软雅黑字体
+Get-ItemProperty "C:\Windows\Fonts\msyh.ttc" -ErrorAction SilentlyContinue
+
+# 如果没有，建议从网上下载并安装 "微软雅黑" 字体
+# 或使用系统自带的其他中文字体
+```
 
 ### Step 2: 克隆项目
 
@@ -38,6 +50,17 @@ pip install -r requirements.txt
 
 # Node.js 依赖
 npm install
+
+# Ghostscript 安装（PDF 压缩，可选但推荐）
+# Linux/Mac:
+#   brew install ghostscript  (macOS)
+#   apt install ghostscript   (Ubuntu/Debian)
+#   yum install ghostscript   (CentOS/RHEL)
+
+# Windows:
+#   下载地址：https://www.ghostscript.com/download/
+#   或使用 winget:
+#   winget install --id ArtifexSoftware.Ghostscript
 ```
 
 ### Step 4: 启动服务
