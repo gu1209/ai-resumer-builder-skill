@@ -1,6 +1,12 @@
 # AI Resume Builder Skill
 
-> 用户只需要把这个文件丢给 Claude Code，一切自动完成
+> 📌 **一键加载提示词**（复制给任何 Agent）：
+> ```
+> 请读取这个 skill 文件并按照其内容帮我完成简历制作：
+> https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/refs/heads/master/ai-resume-builder/AI-Resume-Builder.skill.md
+> ```
+
+> 用户只需要把这个文件丢给 Claude Code 或其他 Agent，一切自动完成
 
 ## 🚀 首次使用（自动安装）
 
