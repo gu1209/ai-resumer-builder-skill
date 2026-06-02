@@ -1,26 +1,27 @@
-# AI Resume Builder - Claude Code Skill
+# AI Resume Builder - Agent Skill
 
-> 🎯 **一句话**：把这个文件丢给 Claude Code，它就能帮你做简历
+> 🎯 **一句话**：把这个文件丢给任意 Agent，它就能帮你做简历
 >
 > 🔥 **核心优势**：根据 JD 精准匹配，每次投递都用最精准的简历！
 
-## 🚀 使用方法
+---
 
-### 第一步：下载 Skill 文件
+## 🚀 快速开始
 
-点击下载：[ai-resume-builder.skill.md](./ai-resume-builder.skill.md)
+### 一键加载（推荐）
 
-### 第二步：丢给 Claude Code
-
-直接把文件拖进 Claude Code 窗口，或者复制内容粘贴进去
-
-### 第三步：开始对话
+复制下面这段提示词，丢给任意 Agent（Claude Code、Cursor、WindSurf、OpenClaw 等）：
 
 ```
-帮我做一份简历
+请读取这个 skill 文件并按照其内容帮我完成简历制作：
+https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/refs/heads/master/ai-resume-builder/AI-Resume-Builder.skill.md
 ```
 
-就这么简单！Claude 会自动完成所有事情。
+### 手动加载
+
+1. 下载 Skill 文件：[AI-Resume-Builder.skill.md](./ai-resume-builder/AI-Resume-Builder.skill.md)
+2. 把文件内容复制给 Agent
+3. 开始对话：`帮我做一份简历`
 
 ---
 
@@ -38,7 +39,7 @@
 用户：我想投字节的产品经理，帮我优化
 [粘贴 JD 内容]
 
-Claude：
+Agent：
 📋 JD 分析：
 - 关键词：用户增长、数据分析、A/B 测试
 - 核心要求：有互联网产品实习经验
@@ -61,28 +62,19 @@ Claude：
 
 ### 📚 提取经历
 
-提供旧简历、项目文档、实习证明，Claude 自动整理成结构化的经历库。
+提供旧简历、项目文档、实习证明，Agent 自动整理成结构化的经历库。
 
 **支持格式**：
 - 📄 文本文件：.txt, .md
 - 📁 文档文件：.docx, .pdf
 - 📝 直接粘贴：在对话中粘贴内容
-- 🎤 口述经历：直接告诉 Claude
+- 🎤 口述经历：直接告诉 Agent
 
 ---
 
 ### 💬 自我介绍
 
 根据简历和目标岗位，生成 100 字以内的自然话术，可直接复制给 HR。
-
-```
-用户：帮我写一段给 HR 的自我介绍
-
-Claude：您好！我是天津大学金融硕士在读的顾杰，26年毕业。
-之前在 Momenta 做过 AI 产品实习，独立设计并落地了基于飞书的
-AI 智能助手，覆盖意图识别、Prompt 设计、数据检索全链路。
-对 Agent 架构和 AI 产品落地有实际经验，很期待能聊聊！
-```
 
 ---
 
@@ -101,76 +93,33 @@ AI 智能助手，覆盖意图识别、Prompt 设计、数据检索全链路。
 
 一次对话，生成多个版本，每个版本针对不同 JD 优化。
 
-```
-用户：我要投 5 个产品岗位，帮我分别优化
-[粘贴 5 个 JD]
-
-Claude：好的，我会为每个岗位生成针对性的简历版本。
-[自动生成 5 个版本]
-[每个版本针对不同 JD 优化]
-[批量导出 PDF]
-```
-
 ---
 
 ## 💬 完整使用示例
 
-### 示例 1：从零开始 + JD 优化
+### 示例：从零开始 + JD 优化
 
 ```
 用户：帮我做一份产品经理的简历
 
-Claude：好的！先了解一下你的情况...
+Agent：好的！先了解一下你的情况...
 [自动引导、整理、生成]
 
 用户：我想投腾讯的产品经理，帮我优化
 [粘贴 JD]
 
-Claude：
+Agent：
 📋 JD 分析：用户增长、数据分析、A/B 测试
 📊 匹配度：✅ 用户增长项目 - 高度匹配
 💡 优化建议：补充量化指标，转化率 25%、DAU 增长 40%
 
 用户：好的，应用修改
 
-Claude：已应用！是否生成 PDF？
+Agent：已应用！是否生成 PDF？
 
 用户：是的
 
-Claude：PDF 已生成：张三-腾讯-产品经理.pdf
-```
-
-### 示例 2：批量投递
-
-```
-用户：我要投 5 个产品岗位，帮我分别优化
-[粘贴 5 个 JD]
-
-Claude：好的，我会为每个岗位生成针对性的简历版本。
-[自动生成 5 个版本]
-[每个版本针对不同 JD 优化]
-[批量导出 PDF]
-
-用户：好的，全部生成 PDF
-
-Claude：已生成 5 个 PDF：
-1. 张三-腾讯-产品经理.pdf
-2. 张三-字节-产品经理.pdf
-3. 张三-阿里-产品经理.pdf
-4. 张三-美团-产品经理.pdf
-5. 张三-京东-产品经理.pdf
-```
-
-### 示例 3：快速修改
-
-```
-用户：把实习经历的第二条改一下
-
-Claude：好的，已修改。
-
-用户：生成 PDF 发给 HR
-
-Claude：PDF 已生成：张三-xxx.pdf
+Agent：PDF 已生成：张三-腾讯-产品经理.pdf
 ```
 
 ---
@@ -191,7 +140,7 @@ Claude：PDF 已生成：张三-xxx.pdf
 
 - **智能环境检测**：Python、Node.js、npm 自动安装
 - **智能克隆**：优先 GitHub，失败自动切换 Gitee 国内镜像
-- **本地修复**：自动修复模板语法、Chrome 路径等问题
+- **本地修复**：自动修复模板语法、浏览器路径等问题
 - **API 调用**：支持通过 API 生成 PDF，无需打开浏览器
 - **跨平台**：Windows、Linux、macOS 全支持
 
@@ -200,10 +149,10 @@ Claude：PDF 已生成：张三-xxx.pdf
 ## ❓ 常见问题
 
 **Q: 需要安装什么吗？**
-A: 不用！Claude 会自动安装所有依赖
+A: 不用！Agent 会自动安装所有依赖
 
 **Q: 需要 API Key 吗？**
-A: 不需要！用 Claude 自己的能力
+A: 不需要！用 Agent 自己的能力
 
 **Q: 数据安全吗？**
 A: 所有数据在本地处理，不会上传
@@ -212,20 +161,19 @@ A: 所有数据在本地处理，不会上传
 A: Skill 自动使用 Gitee 国内镜像
 
 **Q: PDF 生成失败？**
-A: Claude 会自动检测并修复 Chrome 路径问题
+A: Agent 会自动检测并修复浏览器路径问题
 
-**Q: 如何提供 JD？**
-A: 三种方式：
-1. 直接在对话中粘贴 JD 内容
-2. 提供 JD 文件路径（.txt, .md, .docx, .pdf）
-3. 粘贴招聘网站的 JD 链接
-
-**Q: 可以同时优化多个岗位吗？**
-A: 可以！一次对话可以生成多个版本，每个版本针对不同 JD 优化
+**Q: 支持哪些 Agent？**
+A: 支持所有 Agent！只要能加载提示词就可以：
+- Claude Code / Claude Desktop
+- Cursor / WindSurf / CoCursor
+- OpenClaw / QClaw
+- 通义千问 / 文心一言
+- 其他任意支持自定义 Agent 的产品
 
 ---
 
-## 🔗 相关项目
+## 🔗 相关链接
 
 - [GitHub 仓库](https://github.com/gu1209/AI-Resume-Builder)
 - [Gitee 国内镜像](https://gitee.com/kris1209/AI-Resume-Builder)
