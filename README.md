@@ -17,13 +17,7 @@
 /install-skill https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/master/ai-resume-builder/AI-Resume-Builder.skill.md
 ```
 
-然后设置 API Key（一次性）：
-
-```
-我的 DeepSeek API Key 是 sk-xxx
-```
-
-完成。现在你可以直接对话操作简历了。
+完成。不需要任何 API Key，Claude Code 本身就是 AI。
 
 ## ✨ 能做什么
 

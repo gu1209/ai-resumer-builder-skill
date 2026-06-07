@@ -1,190 +1,101 @@
 # Resume Builder Skill
 
-AI-powered Chinese resume optimization and interview preparation, directly in Claude Code.
+AI-powered Chinese resume optimization and interview preparation. Claude Code handles everything natively — no external API key needed.
 
 ## Trigger
 
-User mentions any of: 简历, resume, CV, JD, 职位描述, 求职, 面试, 优化, 修改简历, 面经, 自我介绍, 打招呼
+User mentions: 简历, resume, CV, JD, 职位描述, 求职, 面试, 优化, 面经, 自我介绍
 
-## Modes
+## How It Works
 
-This skill supports TWO modes depending on whether the user has the local server running:
+Claude Code IS the AI. No external API calls needed. Claude Code:
+- Reads and analyzes the user's resume JSON
+- Compares it against the JD using native reasoning
+- Suggests wording optimizations following anti-hallucination rules
+- Uses WebSearch to find real interview experiences
+- Generates formatted reports directly in the conversation
 
-### Mode 1: Local Server (Recommended)
-If `http://localhost:2345` is accessible, delegate to the Flask API for all operations. The server provides:
-- Resume editing with Web GUI
-- PDF generation (Puppeteer)
-- Experience library management
-- Photo upload
-
-**Quick setup**: `pip install flask jinja2 openai && python resume_tool_simple.py`
-
-### Mode 2: Direct (No Server)
-If no local server is running, Claude Code handles everything natively:
-- JD optimization via direct API calls
-- Interview search via WebSearch
-- Resume data read/write from local JSON files
+**Optional**: If `http://localhost:2345` is running, delegate to the Flask server for PDF generation and Web GUI.
 
 ---
 
-## Mode 1: Local Server API Reference
+## Workflows
 
-All endpoints are on `http://localhost:2345`.
+### 1. JD Optimization
 
-### Resume Operations
-```bash
-# Load resume
-curl http://localhost:2345/api/resume/<filename>
+When user provides a JD and wants resume optimized:
 
-# Update field
-curl -X POST http://localhost:2345/api/update \
-  -H 'Content-Type: application/json' \
-  -d '{"filename":"...","path":"versions.0.targetJob","value":"产品经理"}'
+1. **Read** the resume JSON file (user provides path or pastes content)
+2. **Analyze** the JD: extract key skills, experience requirements, keywords
+3. **Compare** each section of the resume against JD requirements
+4. **Suggest changes** following these strict rules:
 
-# Toggle visibility
-curl -X POST http://localhost:2345/api/toggle \
-  -H 'Content-Type: application/json' \
-  -d '{"filename":"...","sectionId":"...","itemId":"...","bulletId":"...或空"}'
+**Allowed (措辞优化)**
+- Replace words with JD-aligned synonyms (e.g., "数据处理" → "数据分析" if JD uses that term)
+- Improve sentence flow and professionalism (without changing facts)
+- Remove subjective fluff ("深刻理解", "显著提升", "积累了丰富经验")
 
-# Generate PDF
-curl -X POST http://localhost:2345/api/generate \
-  -H 'Content-Type: application/json' \
-  -d '{"resumeId":"..."}'
-```
+**Forbidden (禁止编造)**
+- NEVER invent numbers, percentages, or metrics not in the original
+- NEVER create fake project names, company names, or technologies
+- NEVER inflate roles ("参与" → "主导", "协助" → "负责")
+- NEVER add skills or experiences not present in the resume
+- NEVER fabricate STAR details (situation, task context)
 
-### AI Operations (require API key)
-```bash
-# JD Optimization (anti-hallucination constrained)
-curl -X POST http://localhost:2345/api/jd-optimize \
-  -H 'Content-Type: application/json' \
-  -d '{"filename":"...","jdText":"职位描述...","model":"deepseek-v4-flash","apiKey":"sk-..."}'
-
-# AI Build Resume from library
-curl -X POST http://localhost:2345/api/ai-build-resume \
-  -H 'Content-Type: application/json' \
-  -d '{"jdText":"...","model":"deepseek-v4-flash","apiKey":"sk-..."}'
-
-# Generate self-introduction
-curl -X POST http://localhost:2345/api/generate-intro \
-  -H 'Content-Type: application/json' \
-  -d '{"filename":"...","jdText":"...","model":"deepseek-v4-flash","apiKey":"sk-..."}'
-
-# Generate interview report
-curl -X POST http://localhost:2345/api/interview-report \
-  -H 'Content-Type: application/json' \
-  -d '{"filename":"...","jdText":"...","company":"字节跳动","model":"deepseek-v4-flash","apiKey":"sk-..."}'
-
-# View report (returns report_id from above)
-# Open in browser: http://localhost:2345/api/report/<report_id>/html
-```
-
-### Apply suggestions from report
-```
-The interview report HTML page has interactive [应用] buttons for each suggestion.
-Or use API: POST /api/report/<report_id>/apply/<idx>
-```
-
----
-
-## Mode 2: Direct Operation (No Server)
-
-When no local server, Claude Code executes these operations directly.
-
-### Step 1: Get Resume Data
-Ask user for their resume JSON file path or let them paste content. Parse to extract:
-- name, targetJob, sections with items
-- Each item has: id, type-specific fields, enabled flag
-
-### Step 2: JD Optimization
-
-Construct this prompt and send to DeepSeek API:
-
-```
-System: You are a resume wording optimization assistant. You MUST respond in Chinese.
-
-User: 你是简历措辞优化顾问。你的任务是优化简历的表达方式，使之更匹配JD要求。
-
-## 允许的操作（仅限以下）
-1. **关键词对齐**：将简历中的用词替换为JD中的同义关键词
-2. **表达精炼**：改进句式，使表达更专业、更简洁（不改变任何事实）
-3. **冗余删除**：删除"深刻理解""显著提升""积累了丰富经验"等主观评价词
-4. **顺序建议**：标注哪些经历与JD最匹配，建议前置
-
-## 严格禁止
-❌ 编造不存在的数据（百分比、金额、数量、转化率）
-❌ 虚构项目名称、公司名称、技术名词、工具名
-❌ 添加简历中没有的经历、成果、职责
-❌ 改变工作范围（如将"参与"改成"主导"、"协助"改成"负责"）
-❌ 添加JD中有但简历中没有的技能或经验
-
-## 核心原则
-- 只做"翻译"不做"创作"——用JD的语言重新表达简历中的既有事实
-- 每条建议的suggested必须能从original中找到事实依据
-- 如果原文已经很好，不要强行提建议
-
-## 字数控制
-每条要点控制在94字以内（约2行）。
-
-返回严格JSON：
-{"analysis":"JD关键要求概述","suggestions":[{"sectionId":"...","itemId":"...","bulletId":"...或空","field":"content/title/role/category","original":"原文完整内容","suggested":"仅措辞优化后的文本","reason":"修改原因（说明改了什么措辞）"}]}
-
-JD：
-<jd_text>
-
-简历：
-<resume_json>
-```
-
-Execute via: write a temp Python script → `python -c` → call openai → parse JSON result.
-
-### Step 3: Display Results
-Show each suggestion as:
-- ~~原文（红色删除线）~~
-- **建议（绿色加粗）**
-- 💡 原因
-- Offer to apply each suggestion
-
-### Step 4: Interview Report Generation
-
-When user asks for interview preparation:
-
-1. **WebSearch** for interview experiences:
+5. **Display** each suggestion as:
    ```
-   Search: "{targetJob} 面试经验 面经 2025 2026"
-   Search: "{targetJob} 面试题 高频面试"  
-   (If company specified) Search: "{company} {targetJob} 面试流程"
+   ~~原文（红色删除线）~~
+   **建议（绿色加粗）**
+   💡 修改原因
+   ```
+6. **Apply**: Ask user "是否应用这些修改？" before writing back to JSON
+
+### 2. Interview Preparation Report
+
+When user wants interview prep for a specific role/company:
+
+1. **WebSearch** for real interview experiences:
+   ```
+   "{targetJob} 面试经验 面经 2025 2026"
+   "{targetJob} 面试题 高频"
+   "{company} {targetJob} 面试流程"  (if company specified)
    ```
 
-2. **WebFetch** 2-3 most promising results to get detailed content.
+2. **WebFetch** 2-3 most promising results for detailed content
 
-3. **Match Analysis**: Compare JD requirements against resume skills/experience. List matched skills (✅), partial matches (⚠️), and gaps (❌).
+3. **Generate report** with three sections directly in the conversation:
 
-4. **Synthesize report** with three sections:
-   - 📊 Match Analysis (score, skill-by-skill breakdown)
-   - ✏️ Resume Suggestions (anti-hallucination constrained, with apply buttons if server mode)
-   - 💡 Interview Prep (categorized questions from real search results, preparation tips)
+**📊 匹配度分析**
+- Overall match score (estimated from JD vs resume comparison)
+- Skill-by-skill breakdown: ✅ matched / ⚠️ partial / ❌ missing
+- Gap analysis: what the JD requires but the resume lacks
 
-5. **Render** as formatted Markdown/HTML in the conversation.
+**✏️ 简历修改建议**
+- Specific wording changes following anti-hallucination rules
+- Each suggestion shows original → suggested → reason
 
-### Step 5: Self-Introduction Generation
+**💡 面试经验**
+- High-frequency questions (from search results, categorized)
+- Answer approach tips (general strategies, no made-up personal stories)
+- Company-specific insights (if company provided)
 
-Prompt:
-```
-根据以下简历信息和目标岗位JD，生成一段简洁的自我介绍，用于给HR打招呼。
+### 3. AI Build Resume from Library
 
-要求：
-1. 字数控制在100字以内
-2. 包含学历信息（学校、专业、学位、毕业时间）
-3. 突出与JD最匹配的1-2个亮点
-4. 语言自然、专业、有亲和力
-5. 不要太正式，适合即时通讯场景
+When user wants a new resume built from their experience library:
 
-直接输出自我介绍内容，不要添加解释。
-```
+1. Read the experience library JSON (`experience_library.json`)
+2. Analyze JD requirements
+3. Select the most relevant internships, projects, and skills
+4. Organize into a complete resume JSON structure
+5. Only rephrase existing descriptions for JD alignment — never add fake content
+
+### 4. Self-Introduction Generation
+
+Generate a natural, friendly greeting message for HR (under 100 characters), including education background and 1-2 JD-relevant highlights. Suitable for instant messaging.
 
 ---
 
-## Data Model
+## Resume JSON Format
 
 ```json
 {
@@ -192,79 +103,49 @@ Prompt:
   "fontSize": 10.5,
   "versions": [{
     "targetJob": "产品经理",
-    "contactInfo": { "phone": "", "email": "", "birthDate": "", "location": "", "photo": "" },
+    "contactInfo": {
+      "phone": "", "email": "", "birthDate": "", "location": "",
+      "availability": "", "photo": ""
+    },
     "sections": [
       {
-        "id": "sec-edu", "type": "education", "title": "教育背景", "enabled": true, "order": 0,
-        "content": { "items": [
-          { "id": "edu-1", "school": "北京大学", "major": "计算机科学", "degree": "硕士",
-            "startDate": "2024.9", "endDate": "2026.6", "gpa": "3.8/4.0", "courses": ["..."], "enabled": true, "order": 0 }
-        ]}
-      },
-      {
-        "id": "sec-intern", "type": "internship", "title": "实习经历", "enabled": true, "order": 1,
-        "content": { "items": [
-          { "id": "int-1", "role": "产品实习生", "organization": "字节跳动", "dateRange": "2025.4-2025.9",
-            "description": [
-              { "id": "desc-1", "title": "用户增长", "content": "通过A/B测试优化...", "enabled": true, "order": 0 }
-            ], "enabled": true, "order": 0 }
-        ]}
-      },
-      {
-        "id": "sec-proj", "type": "project", "title": "项目经历", "enabled": true, "order": 2,
-        "content": { "items": [
-          { "id": "proj-1", "projectName": "智能推荐系统", "organization": "北京大学",
-            "dateRange": "2024.10-2025.1",
-            "description": [{ "id": "desc-1", "title": "...", "content": "...", "enabled": true, "order": 0 }],
-            "enabled": true, "order": 0 }
-        ]}
-      },
-      {
-        "id": "sec-skills", "type": "skills", "title": "技能与证书", "enabled": true, "order": 3,
-        "content": { "items": [
-          { "id": "sk-1", "category": "编程语言", "content": "Python, SQL", "enabled": true, "order": 0 }
-        ]}
+        "id": "sec-xxx", "type": "education|internship|project|skills|custom",
+        "title": "教育背景", "enabled": true, "order": 0,
+        "content": { "items": [...] }
       }
     ]
   }]
 }
 ```
 
-Key rules:
-- Use `item.enabled !== false` for backward compatibility
-- Sections sorted by `order` field
-- Items within sections sorted by `order` field
-- Bullet content supports HTML: `<b>`, `<strong>`, `<i>`, `<em>`
+**Item types:**
+- Education: `{id, school, major, degree, startDate, endDate, gpa, courses, enabled, order}`
+- Internship: `{id, role, organization, dateRange, description: [{id, title, content, enabled, order}], enabled, order}`
+- Project: `{id, projectName, organization, dateRange, description: [...], enabled, order}`
+- Skills: `{id, category, content, enabled, order}`
+
+Always use `item.enabled !== false` for backward compatibility. Bullet content supports HTML: `<b>`, `<strong>`, `<i>`, `<em>`.
 
 ---
 
-## Configuration
+## Anti-Hallucination Checklist
 
-Required: DeepSeek API key (or compatible OpenAI API)
-- Set via: environment variable `DEEPSEEK_API_KEY` or pass per-request
-- Default base URL: `https://api.deepseek.com`
-- Default model: `deepseek-v4-flash` (fast) or `deepseek-v4-pro` (powerful)
-
----
-
-## Files
-
-When user has cloned the repo, key files are:
-- `resumes/*.json` — Resume data files
-- `experience_library.json` — Master experience library
-- `templates/resume.html.j2` — PDF HTML template
-- `generate_puppeteer.js` — PDF generation script
-- `resume_tool_simple.py` — Flask web server (for Mode 1)
-- `interview_report.py` — Interview report module
+Before presenting any resume modification to the user, verify:
+- [ ] Numbers in suggestion exist in original text
+- [ ] No new proper nouns (companies, projects, technologies) introduced
+- [ ] Role scope unchanged (参与 ≠ 主导, 协助 ≠ 负责)
+- [ ] Total characters ≤ 94 per bullet
+- [ ] If change is >60% different from original, flag with ⚠️
 
 ---
 
-## Anti-Hallucination Rules (ALWAYS apply)
+## Optional: Local Server Mode
 
-When generating ANY resume content modifications:
-1. NEVER invent data not in the original resume
-2. NEVER change scope of responsibility (参与→主导, 协助→负责)
-3. NEVER add skills/experience not present in the source
-4. Only rephrase existing facts using JD-aligned terminology
-5. If unsure whether a change is factual vs fabricated, flag for user review
-6. Mark potentially suspicious suggestions with ⚠️
+If the user has the Flask server running on `localhost:2345`:
+- PDF generation: `POST /api/generate`
+- Web GUI: open `http://localhost:2345`
+- Photo upload: `POST /api/upload-photo`
+
+Quick setup: `pip install flask jinja2 openai && python resume_tool_simple.py`
+
+But the server is NOT required — all analysis, optimization, and reports work without it.
