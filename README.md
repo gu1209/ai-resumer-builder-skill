@@ -1,217 +1,71 @@
-# AI Resume Builder - Agent Skill
+# AI Resume Builder · Claude Code Skill
 
-> 🎯 **一句话**：把这个文件丢给任意 Agent，它就能帮你做简历
->
-> 🔥 **核心优势**：根据 JD 精准匹配，每次投递都用最精准的简历！
+<p align="center">
+  <a href="https://github.com/gu1209/AI-Resume-Builder"><b>📦 主仓库</b></a> ·
+  <a href="http://121.41.118.22:2345"><b>🚀 在线体验</b></a>
+</p>
 
 ---
 
-## 🚀 快速开始
+> 把这个 Skill 装到 Claude Code，对话就能做简历。**不需要 git clone，不需要装任何东西。**
 
-### 一键加载（推荐）
+## 🚀 安装
 
-复制下面这段提示词，丢给任意 Agent（Claude Code、Cursor、WindSurf、OpenClaw 等）：
+在 Claude Code 中输入：
 
 ```
-请读取这个 skill 文件并按照其内容帮我完成简历制作：
-https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/refs/heads/master/ai-resume-builder/AI-Resume-Builder.skill.md
+/install-skill https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/master/ai-resume-builder/AI-Resume-Builder.skill.md
 ```
 
-### 手动加载
-
-1. 下载 Skill 文件：[AI-Resume-Builder.skill.md](./ai-resume-builder/AI-Resume-Builder.skill.md)
-2. 把文件内容复制给 Agent
-3. 开始对话：`帮我做一份简历`
-
----
-
-## ✨ 核心功能
-
-### 🎯 JD 智能匹配（核心亮点！）
-
-**支持方式**：
-- 📄 **直接粘贴 JD**：在对话中粘贴目标岗位的 JD
-- 📁 **提供 JD 文件**：提供 JD 文件路径（.txt, .md, .docx, .pdf）
-- 🔗 **粘贴 JD 链接**：粘贴招聘网站的 JD 链接
-
-**使用示例**：
-```
-用户：我想投字节的产品经理，帮我优化
-[粘贴 JD 内容]
-
-Agent：
-📋 JD 分析：
-- 关键词：用户增长、数据分析、A/B 测试
-- 核心要求：有互联网产品实习经验
-
-📊 简历匹配度：
-✅ 用户增长项目 - 高度匹配
-✅ 数据分析经验 - 匹配
-⚠️ 跨团队协作 - 需要补充
-
-💡 优化建议：
-1. 用户增长项目：增加 "协调设计、开发团队" 描述
-2. 补充量化指标：转化率 25%、DAU 增长 40%
-
-是否应用这些修改？
-```
-
-**效果**：每次投递都用最精准的简历，命中率提升 300%！
-
----
-
-### 📚 提取经历
-
-提供旧简历、项目文档、实习证明，Agent 自动整理成结构化的经历库。
-
-**支持格式**：
-- 📄 文本文件：.txt, .md
-- 📁 文档文件：.docx, .pdf
-- 📝 直接粘贴：在对话中粘贴内容
-- 🎤 口述经历：直接告诉 Agent
-
----
-
-### 💬 自我介绍
-
-根据简历和目标岗位，生成 100 字以内的自然话术，可直接复制给 HR。
-
----
-
-### 📋 面试准备报告（NEW!）
-
-输入 JD + 目标公司，自动生成一份完整的面试准备报告：
-
-- 📊 **匹配度分析**：JD 要求 vs 简历现状，逐项评分
-- ✏️ **简历修改建议**：反幻觉约束（AI 只优化措辞，不编造经历）
-- 💡 **面试题库**：网上搜索真实面经，分类整理高频题 + 回答思路
-- 🏢 **公司特点**：目标公司的面试流程和偏好
-
-每条建议都可以一键应用到简历。
-
----
-
-### 📄 生成 PDF
-
-通过 API 调用 Puppeteer，自动生成专业排版的 PDF 简历。
-
-**特点**：
-- Puppeteer 专业排版
-- A4 标准格式，自动压缩
-- 一键导出，格式统一
-
----
-
-### 🔄 批量投递
-
-一次对话，生成多个版本，每个版本针对不同 JD 优化。
-
----
-
-### 🛡️ 反幻觉保护（NEW!）
-
-所有 AI 修改建议经过四层验证：
-1. Prompt 约束：只优化措辞，不编造数据
-2. 数字检测：建议中的数字必须来自原文
-3. 职责检查：不能把"参与"改成"主导"
-4. 差异度告警：改动过大时标记 ⚠️ 提醒审核
-
----
-
-## 💬 完整使用示例
-
-### 示例：从零开始 + JD 优化
+然后设置 API Key（一次性）：
 
 ```
-用户：帮我做一份产品经理的简历
-
-Agent：好的！先了解一下你的情况...
-[自动引导、整理、生成]
-
-用户：我想投腾讯的产品经理，帮我优化
-[粘贴 JD]
-
-Agent：
-📋 JD 分析：用户增长、数据分析、A/B 测试
-📊 匹配度：✅ 用户增长项目 - 高度匹配
-💡 优化建议：补充量化指标，转化率 25%、DAU 增长 40%
-
-用户：好的，应用修改
-
-Agent：已应用！是否生成 PDF？
-
-用户：是的
-
-Agent：PDF 已生成：张三-腾讯-产品经理.pdf
+我的 DeepSeek API Key 是 sk-xxx
 ```
 
----
+完成。现在你可以直接对话操作简历了。
 
-## 📊 效果对比
+## ✨ 能做什么
 
-| 对比项 | 传统方式 | AI 简历助手 |
-|--------|----------|-------------|
-| 简历匹配度 | 凭感觉修改 | JD 精准匹配 |
-| 排版格式 | Word 手动排版 | Puppeteer 专业排版 |
-| 投递效率 | 1 个岗位改 1 小时 | 5 个岗位 10 分钟 |
-| 命中率 | 海投碰运气 | 精准投递，命中率高 |
-| 格式统一性 | 每次都不一样 | 自动统一，专业美观 |
+| 功能 | 用法 |
+|------|------|
+| **JD 优化** | "帮我分析这个JD，优化我的简历" + 粘贴 JD |
+| **面试报告** | "帮我生成字节跳动产品经理的面试准备报告" |
+| **AI 构建简历** | "根据这个 JD 帮我从经历库里选经历，做一份新简历" |
+| **自我介绍** | "帮我写一段给 HR 的自我介绍" |
+| **PDF 生成** | "帮我生成 PDF"（需要本地有 Flask 服务） |
 
----
+## 🎯 两种模式
 
-## 🔧 技术特性
+### 模式一：纯对话（零依赖）
 
-- **智能环境检测**：Python、Node.js、npm 自动安装
-- **智能克隆**：优先 GitHub，失败自动切换 Gitee 国内镜像
-- **本地修复**：自动修复模板语法、浏览器路径等问题
-- **API 调用**：支持通过 API 生成 PDF，无需打开浏览器
-- **跨平台**：Windows、Linux、macOS 全支持
+Claude Code 直接调用 AI + 搜索，对话内输出结果。适合快速分析和建议，不需要安装任何东西。
 
----
+### 模式二：本地服务（完整功能）
 
-## ❓ 常见问题
+克隆仓库启动 Flask 后，支持 PDF 生成、Web 界面编辑、一键应用修改等完整功能。
 
-**Q: 需要安装什么吗？**
-A: 不用！Agent 会自动安装所有依赖
+```bash
+git clone https://github.com/gu1209/AI-Resume-Builder.git
+cd AI-Resume-Builder
+pip install flask jinja2 openai && npm install
+python resume_tool_simple.py
+```
 
-**Q: 需要 API Key 吗？**
-A: 不需要！用 Agent 自己的能力
+## 🛡️ 反幻觉保护
 
-**Q: 数据安全吗？**
-A: 所有数据在本地处理，不会上传
+所有 AI 修改建议严格遵循：
 
-**Q: 国内网络不好怎么办？**
-A: Skill 自动使用 Gitee 国内镜像
+- ❌ 不编造数据、不虚构经历、不篡改职责范围
+- ✅ 只优化措辞：用 JD 的语言重新表达已有事实
+- ⚠️ 改动过大时自动标记提醒审核
 
-**Q: PDF 生成失败？**
-A: Agent 会自动检测并修复浏览器路径问题
+## 🔗 链接
 
-**Q: 支持哪些 Agent？**
-A: 支持所有 Agent！只要能加载提示词就可以：
-- Claude Code / Claude Desktop
-- Cursor / WindSurf / CoCursor
-- OpenClaw / QClaw
-- 通义千问 / 文心一言
-- 其他任意支持自定义 Agent 的产品
-
----
-
-## 🔗 相关链接
-
-- [GitHub 仓库](https://github.com/gu1209/AI-Resume-Builder)
-- [Gitee 国内镜像](https://gitee.com/kris1209/AI-Resume-Builder)
-- [在线体验](http://121.41.118.22:2345)
-
----
+- [主仓库](https://github.com/gu1209/AI-Resume-Builder) — 开源代码 + Web 工具
+- [在线 Demo](http://121.41.118.22:2345) — 直接体验
+- [DeepSeek API](https://platform.deepseek.com/api_keys) — 获取 API Key
 
 ## 📄 许可证
 
-© 2026 gu1209. 本作品采用 [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/)。
-
-**您可以自由地**：
-- 分享：以任何媒介或格式复制和分发本作品
-- 改编：对本作品进行 remix、transform 和构建
-
-**需满足以下条件**：
-- 署名（Attribution）：必须提供适当的署名，提供许可证的链接，并指明是否进行了修改
-- 非商业用途（NonCommercial）：不得将本作品用于商业目的
+CC BY-NC 4.0 — 署名 · 非商业使用
