@@ -11,13 +11,19 @@
 
 ## 🚀 安装
 
-在 Claude Code 中输入：
+**一行命令**，在终端执行：
 
-```
-/install-skill https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/master/ai-resume-builder/AI-Resume-Builder.skill.md
+Mac / Linux:
+```bash
+curl -fsSL https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/master/ai-resume-builder/AI-Resume-Builder.skill.md -o ~/.claude/skills/resume-builder.skill.md
 ```
 
-完成。不需要任何 API Key，Claude Code 本身就是 AI。
+Windows (PowerShell):
+```powershell
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/gu1209/ai-resumer-builder-skill/master/ai-resume-builder/AI-Resume-Builder.skill.md" -OutFile "$env:USERPROFILE\.claude\skills\resume-builder.skill.md"
+```
+
+然后重启 Claude Code 即可。不需要任何 API Key，Claude Code 本身就是 AI。
 
 ## ✨ 能做什么
 
